@@ -36,4 +36,6 @@ node_modules/
 !tests/*.json
 
 # Dist
-dist/**
+# @fixme: なぜかnpm install時にprepareが動かない環境用にdistをコメントアウトした。
+# 動く環境では、勝手にprepareで最新に置き換わるので一旦コメントアウトで対処する。
+#dist/**
