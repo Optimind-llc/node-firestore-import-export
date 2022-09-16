@@ -60,7 +60,7 @@ const safelyGetCollectionsSnapshot = async (startingRef: admin.firestore.Firesto
     try {
       collectionsSnapshot = await startingRef.listCollections();
       deadlineError = false;
-    } catch (e) {
+    } catch (e: any) {
       if (e.message === 'Deadline Exceeded') {
         logs && console.log(`Deadline Error in getCollections()...waiting ${SLEEP_TIME / 1000} second(s) before retrying`);
         await sleep(SLEEP_TIME);
@@ -79,7 +79,7 @@ const safelyGetDocumentReferences = async (collectionRef: FirebaseFirestore.Coll
     try {
       allDocuments = await collectionRef.listDocuments();
       deadlineError = false;
-    } catch (e) {
+    } catch (e: any) {
       if (e.code && e.code === 4) {
         logs && console.log(`Deadline Error in getDocuments()...waiting ${SLEEP_TIME / 1000} second(s) before retrying`);
         await sleep(SLEEP_TIME);
