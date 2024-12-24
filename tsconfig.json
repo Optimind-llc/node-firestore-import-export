@@ -9,6 +9,7 @@
     "strict": true,
     "declaration": true,
     "noImplicitAny": true,
+    "skipLibCheck": true,
     "outDir": "./dist/",
     "rootDirs": [
       "./src/bin",
