@@ -23,10 +23,10 @@ const firestore_helpers_1 = require("../lib/firestore-helpers");
 const load_json_file_1 = __importDefault(require("load-json-file"));
 const bin_common_1 = require("./bin-common");
 commander_1.default.version(bin_common_1.packageInfo.version)
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.accountCredentialsPath))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.backupFileImport))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.nodePath))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.yesToImport))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.accountCredentialsPath))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.backupFileImport))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.nodePath))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.yesToImport))
     .parse(process_1.default.argv);
 const accountCredentialsPath = commander_1.default[bin_common_1.commandLineParams.accountCredentialsPath.key] || process_1.default.env[bin_common_1.accountCredentialsEnvironmentKey];
 if (!accountCredentialsPath) {
@@ -53,10 +53,10 @@ if (!fs_1.default.existsSync(backupFile)) {
 const nodePath = commander_1.default[bin_common_1.commandLineParams.nodePath.key];
 const unattendedConfirmation = commander_1.default[bin_common_1.commandLineParams.yesToImport.key];
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    const credentials = yield firestore_helpers_1.getCredentialsFromFile(accountCredentialsPath);
-    const db = firestore_helpers_1.getFirestoreDBReference(credentials);
-    const pathReference = yield firestore_helpers_1.getDBReferenceFromPath(db, nodePath);
-    const data = yield load_json_file_1.default(backupFile);
+    const credentials = yield (0, firestore_helpers_1.getCredentialsFromFile)(accountCredentialsPath);
+    const db = (0, firestore_helpers_1.getFirestoreDBReference)(credentials);
+    const pathReference = yield (0, firestore_helpers_1.getDBReferenceFromPath)(db, nodePath);
+    const data = yield (0, load_json_file_1.default)(backupFile);
     if (!unattendedConfirmation) {
         const nodeLocation = pathReference
             .path || '[database root]';
@@ -64,7 +64,7 @@ const unattendedConfirmation = commander_1.default[bin_common_1.commandLineParam
         const importText = `About to import data '${backupFile}' to the '${projectID}' firestore at '${nodeLocation}'.`;
         console.log(`\n\n${colors_1.default.bold(colors_1.default.blue(importText))}`);
         console.log(colors_1.default.bgYellow(colors_1.default.blue(' === Warning: This will overwrite existing data. Do you want to proceed? === ')));
-        const response = yield enquirer_1.prompt({
+        const response = yield (0, enquirer_1.prompt)({
             type: 'confirm',
             name: 'continue',
             message: 'Proceed with import?',
@@ -74,7 +74,7 @@ const unattendedConfirmation = commander_1.default[bin_common_1.commandLineParam
         }
     }
     console.log(colors_1.default.bold(colors_1.default.green('Starting Import 🏋️')));
-    yield lib_1.firestoreImport(data, pathReference, true, true);
+    yield (0, lib_1.firestoreImport)(data, pathReference, true, true);
     console.log(colors_1.default.bold(colors_1.default.green('All done 🎉')));
 }))().catch((error) => {
     if (error instanceof bin_common_1.ActionAbortedError) {
