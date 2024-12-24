@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import loadJsonFile from 'load-json-file';
 import {IFirebaseCredentials} from '../interfaces/IFirebaseCredentials';
+import { CollectionReference, DocumentReference } from 'firebase-admin/firestore';
 
 const SLEEP_TIME = 1000;
 
@@ -18,8 +19,8 @@ const getFirestoreDBReference = (credentials: IFirebaseCredentials): admin.fires
 };
 
 const getDBReferenceFromPath = (db: admin.firestore.Firestore, dataPath?: string): admin.firestore.Firestore |
-  FirebaseFirestore.DocumentReference |
-  FirebaseFirestore.CollectionReference => {
+  DocumentReference |
+  CollectionReference => {
   let startingRef;
   if (dataPath) {
     const parts = dataPath.split('/').length;
@@ -32,14 +33,14 @@ const getDBReferenceFromPath = (db: admin.firestore.Firestore, dataPath?: string
 };
 
 const isLikeDocument = (ref: admin.firestore.Firestore |
-  FirebaseFirestore.DocumentReference |
-  FirebaseFirestore.CollectionReference): ref is FirebaseFirestore.DocumentReference => {
-  return (<FirebaseFirestore.DocumentReference>ref).collection !== undefined;
+  DocumentReference |
+  CollectionReference): ref is DocumentReference => {
+  return (<DocumentReference>ref).collection !== undefined;
 };
 
 const isRootOfDatabase = (ref: admin.firestore.Firestore |
-  FirebaseFirestore.DocumentReference |
-  FirebaseFirestore.CollectionReference): ref is admin.firestore.Firestore => {
+  DocumentReference |
+  CollectionReference): ref is admin.firestore.Firestore => {
   return (<admin.firestore.Firestore>ref).batch !== undefined;
 };
 
@@ -54,14 +55,14 @@ const batchExecutor = async function <T>(promises: Promise<T>[], batchSize: numb
   return res;
 };
 
-const safelyGetCollectionsSnapshot = async (startingRef: admin.firestore.Firestore | FirebaseFirestore.DocumentReference, logs = false): Promise<FirebaseFirestore.CollectionReference[]> => {
+const safelyGetCollectionsSnapshot = async (startingRef: admin.firestore.Firestore | DocumentReference, logs = false): Promise<CollectionReference[]> => {
   let collectionsSnapshot, deadlineError = false;
   do {
     try {
       collectionsSnapshot = await startingRef.listCollections();
       deadlineError = false;
     } catch (e) {
-      if (e.message === 'Deadline Exceeded') {
+      if ((e as any).message === 'Deadline Exceeded') {
         logs && console.log(`Deadline Error in getCollections()...waiting ${SLEEP_TIME / 1000} second(s) before retrying`);
         await sleep(SLEEP_TIME);
         deadlineError = true;
@@ -73,14 +74,14 @@ const safelyGetCollectionsSnapshot = async (startingRef: admin.firestore.Firesto
   return collectionsSnapshot;
 };
 
-const safelyGetDocumentReferences = async (collectionRef: FirebaseFirestore.CollectionReference, logs = false): Promise<FirebaseFirestore.DocumentReference[]> => {
+const safelyGetDocumentReferences = async (collectionRef: CollectionReference, logs = false): Promise<DocumentReference[]> => {
   let allDocuments, deadlineError = false;
   do {
     try {
       allDocuments = await collectionRef.listDocuments();
       deadlineError = false;
     } catch (e) {
-      if (e.code && e.code === 4) {
+      if ((e as any).code && (e as any).code === 4) {
         logs && console.log(`Deadline Error in getDocuments()...waiting ${SLEEP_TIME / 1000} second(s) before retrying`);
         await sleep(SLEEP_TIME);
         deadlineError = true;
@@ -93,8 +94,8 @@ const safelyGetDocumentReferences = async (collectionRef: FirebaseFirestore.Coll
 };
 
 type anyFirebaseRef = admin.firestore.Firestore |
-  FirebaseFirestore.DocumentReference |
-  FirebaseFirestore.CollectionReference
+  DocumentReference |
+  CollectionReference
 
 export {
   getCredentialsFromFile,

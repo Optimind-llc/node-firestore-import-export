@@ -1,13 +1,14 @@
 import 'mocha';
 import {expect} from 'chai';
 import {firestoreClear} from '../src/lib';
+import { CollectionReference } from 'firebase-admin/firestore';
 
 const firebasemock: any = require('firebase-mock');
 const DocumentReference: any = require('firebase-mock/src/firestore-document');
-const CollectionReference: any = require('firebase-mock/src/firestore-collection');
+const CollectionReferenceMock: any = require('firebase-mock/src/firestore-collection');
 const sampleRootData = require('./sampleRootData.json');
 
-const getCollections = function (this: any): Promise<FirebaseFirestore.CollectionReference[]> {
+const getCollections = function (this: any): Promise<CollectionReference[]> {
   const self = this;
   return new Promise((resolve, reject) => {
     let collections: Array<any>;
@@ -32,7 +33,7 @@ describe('Firestore Export', () => {
     DocumentReference.prototype.getCollections = getCollections;
     firebasemock.MockFirestore.prototype.listCollections = getCollections;
     DocumentReference.prototype.listCollections = getCollections;
-    CollectionReference.prototype.listDocuments = async function () {
+    CollectionReferenceMock.prototype.listDocuments = async function () {
       return Object.keys(this.children).map(id => this.children[id]);
     };
   });
