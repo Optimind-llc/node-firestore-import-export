@@ -1,4 +1,4 @@
+import { CollectionReference, DocumentReference } from 'firebase-admin/firestore';
 import * as admin from 'firebase-admin';
-import DocumentReference = FirebaseFirestore.DocumentReference;
-declare const clearData: (startingRef: admin.firestore.Firestore | FirebaseFirestore.DocumentReference | FirebaseFirestore.CollectionReference, logs?: boolean) => Promise<any[]>;
+declare const clearData: (startingRef: admin.firestore.Firestore | DocumentReference | CollectionReference, logs?: boolean) => Promise<any[]>;
 export default clearData;

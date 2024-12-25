@@ -22,10 +22,10 @@ const lib_1 = require("../lib");
 const enquirer_1 = require("enquirer");
 const bin_common_1 = require("./bin-common");
 commander_1.default.version(bin_common_1.packageInfo.version)
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.accountCredentialsPath))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.nodePath))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.yesToClear))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.yesToNoWait))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.accountCredentialsPath))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.nodePath))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.yesToClear))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.yesToNoWait))
     .parse(process_1.default.argv);
 const accountCredentialsPath = commander_1.default[bin_common_1.commandLineParams.accountCredentialsPath.key] || process_1.default.env[bin_common_1.accountCredentialsEnvironmentKey];
 if (!accountCredentialsPath) {
@@ -42,9 +42,9 @@ const nodePath = commander_1.default[bin_common_1.commandLineParams.nodePath.key
 const unattendedConfirmation = commander_1.default[bin_common_1.commandLineParams.yesToClear.key];
 const noWait = commander_1.default[bin_common_1.commandLineParams.yesToNoWait.key];
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    const credentials = yield firestore_helpers_1.getCredentialsFromFile(accountCredentialsPath);
-    const db = firestore_helpers_1.getFirestoreDBReference(credentials);
-    const pathReference = firestore_helpers_1.getDBReferenceFromPath(db, nodePath);
+    const credentials = yield (0, firestore_helpers_1.getCredentialsFromFile)(accountCredentialsPath);
+    const db = (0, firestore_helpers_1.getFirestoreDBReference)(credentials);
+    const pathReference = (0, firestore_helpers_1.getDBReferenceFromPath)(db, nodePath);
     const nodeLocation = pathReference
         .path || '[database root]';
     const projectID = process_1.default.env.FIRESTORE_EMULATOR_HOST || credentials.project_id;
@@ -52,7 +52,7 @@ const noWait = commander_1.default[bin_common_1.commandLineParams.yesToNoWait.ke
     console.log(`\n\n${colors_1.default.bold(colors_1.default.blue(deleteText))}`);
     if (!unattendedConfirmation) {
         console.log(colors_1.default.bgYellow(colors_1.default.blue(' === Warning: This will clear all existing data. Do you want to proceed? === ')));
-        const response = yield enquirer_1.prompt({
+        const response = yield (0, enquirer_1.prompt)({
             type: 'confirm',
             name: 'continue',
             message: 'Proceed with clear?',
@@ -63,10 +63,10 @@ const noWait = commander_1.default[bin_common_1.commandLineParams.yesToNoWait.ke
     }
     else if (!noWait) {
         console.log(colors_1.default.bgYellow(colors_1.default.blue(' === Warning: Deletion will start in 5 seconds. Hit Ctrl-C to cancel. === ')));
-        yield firestore_helpers_1.sleep(5000);
+        yield (0, firestore_helpers_1.sleep)(5000);
     }
     console.log(colors_1.default.bold(colors_1.default.green('Starting clearing of records 🏋️')));
-    yield lib_1.firestoreClear(pathReference, true);
+    yield (0, lib_1.firestoreClear)(pathReference, true);
     console.log(colors_1.default.bold(colors_1.default.green('All done 🎉')));
 }))().catch((error) => {
     if (error instanceof bin_common_1.ActionAbortedError) {

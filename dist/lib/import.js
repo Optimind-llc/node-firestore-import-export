@@ -16,7 +16,7 @@ const firestore_helpers_1 = require("./firestore-helpers");
 const helpers_1 = require("./helpers");
 const importData = (data, startingRef, mergeWithExisting = true, logs = false) => {
     const dataToImport = Object.assign({}, data);
-    if (firestore_helpers_1.isLikeDocument(startingRef)) {
+    if ((0, firestore_helpers_1.isLikeDocument)(startingRef)) {
         if (!dataToImport.hasOwnProperty('__collections__')) {
             throw new Error('Root or document reference doesn\'t contain a __collections__ property.');
         }
@@ -27,15 +27,15 @@ const importData = (data, startingRef, mergeWithExisting = true, logs = false) =
                 collectionPromises.push(setDocuments(collections[collection], startingRef.collection(collection), mergeWithExisting, logs));
             }
         }
-        if (firestore_helpers_1.isRootOfDatabase(startingRef)) {
-            return firestore_helpers_1.batchExecutor(collectionPromises);
+        if ((0, firestore_helpers_1.isRootOfDatabase)(startingRef)) {
+            return (0, firestore_helpers_1.batchExecutor)(collectionPromises);
         }
         else {
             const documentID = startingRef.id;
             const documentData = {};
             documentData[documentID] = dataToImport;
             const documentPromise = setDocuments(documentData, startingRef.parent, mergeWithExisting, logs);
-            return documentPromise.then(() => firestore_helpers_1.batchExecutor(collectionPromises));
+            return documentPromise.then(() => (0, firestore_helpers_1.batchExecutor)(collectionPromises));
         }
     }
     else {
@@ -49,7 +49,7 @@ const setDocuments = (data, startingRef, mergeWithExisting = true, logs = false)
             ' the root of the incoming data?');
     }
     const collections = [];
-    const chunks = helpers_1.array_chunks(Object.keys(data), 500);
+    const chunks = (0, helpers_1.array_chunks)(Object.keys(data), 500);
     const chunkPromises = chunks.map((documentKeys) => {
         const batch = startingRef.firestore.batch();
         documentKeys.map((documentKey) => {
@@ -62,18 +62,18 @@ const setDocuments = (data, startingRef, mergeWithExisting = true, logs = false)
                 });
             }
             const _a = data[documentKey], { __collections__ } = _a, documents = __rest(_a, ["__collections__"]);
-            const documentData = helpers_1.unserializeSpecialTypes(documents);
+            const documentData = (0, helpers_1.unserializeSpecialTypes)(documents);
             batch.set(startingRef.doc(documentKey), documentData, { merge: mergeWithExisting });
         });
         return batch.commit();
     });
-    return firestore_helpers_1.batchExecutor(chunkPromises)
+    return (0, firestore_helpers_1.batchExecutor)(chunkPromises)
         .then(() => {
         return collections.map((col) => {
             return setDocuments(col.collection, col.path, mergeWithExisting, logs);
         });
     })
-        .then(subCollectionPromises => firestore_helpers_1.batchExecutor(subCollectionPromises))
+        .then(subCollectionPromises => (0, firestore_helpers_1.batchExecutor)(subCollectionPromises))
         .catch(err => {
         logs && console.error(err);
     });

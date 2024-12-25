@@ -21,10 +21,10 @@ const lib_1 = require("../lib");
 const firestore_helpers_1 = require("../lib/firestore-helpers");
 const bin_common_1 = require("./bin-common");
 commander_1.default.version(bin_common_1.packageInfo.version)
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.accountCredentialsPath))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.backupFileExport))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.nodePath))
-    .option(...bin_common_1.buildOption(bin_common_1.commandLineParams.prettyPrint))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.accountCredentialsPath))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.backupFileExport))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.nodePath))
+    .option(...(0, bin_common_1.buildOption)(bin_common_1.commandLineParams.prettyPrint))
     .parse(process_1.default.argv);
 const accountCredentialsPath = commander_1.default[bin_common_1.commandLineParams.accountCredentialsPath.key] || process_1.default.env[bin_common_1.accountCredentialsEnvironmentKey];
 if (!accountCredentialsPath) {
@@ -58,11 +58,11 @@ const writeResults = (results, filename) => {
 const prettyPrint = Boolean(commander_1.default[bin_common_1.commandLineParams.prettyPrint.key]);
 const nodePath = commander_1.default[bin_common_1.commandLineParams.nodePath.key];
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    const credentials = yield firestore_helpers_1.getCredentialsFromFile(accountCredentialsPath);
-    const db = firestore_helpers_1.getFirestoreDBReference(credentials);
-    const pathReference = firestore_helpers_1.getDBReferenceFromPath(db, nodePath);
+    const credentials = yield (0, firestore_helpers_1.getCredentialsFromFile)(accountCredentialsPath);
+    const db = (0, firestore_helpers_1.getFirestoreDBReference)(credentials);
+    const pathReference = (0, firestore_helpers_1.getDBReferenceFromPath)(db, nodePath);
     console.log(colors_1.default.bold(colors_1.default.green('Starting Export 🏋️')));
-    const results = yield lib_1.firestoreExport(pathReference, true);
+    const results = yield (0, lib_1.firestoreExport)(pathReference, true);
     const stringResults = JSON.stringify(results, undefined, prettyPrint ? 2 : undefined);
     yield writeResults(stringResults, backupFile);
     console.log(colors_1.default.yellow(`Results were saved to ${backupFile}`));
